@@ -1,14 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Autofac;
+using Microsoft.Extensions.DependencyInjection;
 using Sandbox.OpenGenerics.Handlers;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sandbox.OpenGenerics
 {
@@ -47,6 +39,38 @@ namespace Sandbox.OpenGenerics
 
             // Handle the response.
             Console.WriteLine($"response: {generatedResponse.Message} {generatedResponse.ResponseTime}");
+        }
+
+        public static void RunAutofacExample()
+        {
+            // Create the autofac builder.
+            var builder = new ContainerBuilder();
+
+            // register all closed types if the ICommand interface
+            // Offical doc: https://autofac.org/apidoc/html/150314CB.htm
+            // Stack Overflow: https://stackoverflow.com/questions/16757945/how-to-register-many-for-open-generic-in-autofac
+            builder.RegisterAssemblyTypes(AppDomain.CurrentDomain.GetAssemblies())
+                .AsClosedTypesOf(typeof(ICommand<>)).AsImplementedInterfaces();
+
+            var container = builder.Build();
+
+            HelloRequest request = new HelloRequest()
+            {
+                Message = "Autofac example"
+            };
+
+            // Create an open generic
+            Type t = typeof(ICommand<>);
+            Type closed = t.MakeGenericType(request.GetType());
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var handler = scope.Resolve(closed) as ICommandBase;
+                var response = handler!.Handle(request);
+
+                Console.WriteLine($"response: {response.Message} {response.ResponseTime}");
+            }
+
         }
     }
 }
