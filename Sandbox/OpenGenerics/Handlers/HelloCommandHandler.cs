@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sandbox.OpenGenerics.Handlers
+﻿namespace Sandbox.OpenGenerics.Handlers
 {
-    internal class HelloCommandHandler : CommandHandlerBase<HelloRequest, HelloResponse>
+    public class HelloCommandHandler : ICommand<HelloRequest>
     {
-        public override HelloResponse Handle(HelloRequest input)
+        public IResponse Handle(IRequest request)
         {
             return new HelloResponse()
             {
-                Message = $"Echo {input.Message}",
+                Message = $"Echo {request.Message}",
                 ResponseTime = DateTime.Now,
             };
         }
