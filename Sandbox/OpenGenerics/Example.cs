@@ -27,7 +27,7 @@ namespace Sandbox.OpenGenerics
             // Imagine we had a method that received a request, we need to get the correct handler for the request.
             var request = new HelloRequest();
 
-            // WE can make the open generic a closed generic e.g. ICommand<HelloRequest>
+            // We can make the open generic a closed generic e.g. ICommand<HelloRequest>
             Type closed = t.MakeGenericType(request.GetType());
 
             // we can now get this service and cast to the IBaseCommand.
