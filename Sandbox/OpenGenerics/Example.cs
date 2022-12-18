@@ -8,12 +8,6 @@ namespace Sandbox.OpenGenerics
     {
         public static void Run()
         {
-            HelloCommandHandler handler = new HelloCommandHandler();
-            var response = handler.Handle(new HelloRequest());
-            Console.WriteLine(response.Message);
-
-            var type = typeof(ICommand<>);
-            
             // Here we are setting up our DI. We are saying that any ICommand<HelloRequest> use the HelloCommandHandler.
             // In other DI containers (autofac, castle windsor) it is possible to register all closed versions of an interface
             // in a single line.
@@ -46,7 +40,7 @@ namespace Sandbox.OpenGenerics
             // Create the autofac builder.
             var builder = new ContainerBuilder();
 
-            // register all closed types if the ICommand interface
+            // register all closed types of the ICommand interface
             // Offical doc: https://autofac.org/apidoc/html/150314CB.htm
             // Stack Overflow: https://stackoverflow.com/questions/16757945/how-to-register-many-for-open-generic-in-autofac
             builder.RegisterAssemblyTypes(AppDomain.CurrentDomain.GetAssemblies())
